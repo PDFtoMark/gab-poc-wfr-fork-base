@@ -1,0 +1,30 @@
+---
+name: Lint
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save PR number
+        if: always()
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: echo "$PR_NUMBER" > pr-number.txt
+      - name: Make benign report
+        if: always()
+        run: echo "benign lint output" > linter-report.txt
+      - name: Upload linter report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linter-report
+          path: |
+            linter-report.txt
+            pr-number.txt
+          if-no-files-found: ignore
